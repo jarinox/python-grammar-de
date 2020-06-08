@@ -1,7 +1,11 @@
+# umformen.py - Wörter und Sätze umformen
+# Copyright 2020 Jakob Stolze <https://github.com/jaybeejs>
+
 
 frws = ["wer", "wo", "was", "wen", "wem", "welche", "welcher", "wehlches", "wohin", "woher", "womit", "wie", "wann", "woran", "warum", "weshalb", "weswegen", "wozu"]
 
 def pronomenTausch(pronom):
+    """Tausche ein Pronomen der 1. Person Singular zur 2. Person Singular oder anders herum"""
     pronom = pronom.lower()
     if(pronom == "ich"):
         return "du"
@@ -39,6 +43,7 @@ def personFiltern(eigenschaften):
 
 
 def frageZuAntwort(woerterbuch, frage, case=True):
+    """Erstelle eine Antwort aus einer Frage. Beispiel: wer bist du -> ich weiß nicht, wer ich bin"""
     frageLower = frage.lower()
     
     frageNeu = ""
