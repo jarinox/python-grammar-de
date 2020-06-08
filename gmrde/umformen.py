@@ -7,14 +7,22 @@ def pronomenTausch(pronom):
         return "du"
     elif(pronom == "du"):
         return "ich"
-    if(pronom == "mich"):
+    elif(pronom == "mich"):
         return "dich"
     elif(pronom == "dich"):
         return "mich"
-    if(pronom == "dir"):
+    elif(pronom == "dir"):
         return "mir"
     elif(pronom == "mir"):
         return "dir"
+    elif(pronom == "meine"):
+        return "deine"
+    elif(pronom == "deine"):
+        return "meine"
+    elif(pronom == "dein"):
+        return "mein"
+    elif(pronom == "mein"):
+        return "dein"
     else:
         return pronom
 
