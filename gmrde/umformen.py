@@ -2,31 +2,47 @@
 # Copyright 2020 Jakob Stolze <https://github.com/jaybeejs>
 
 
-frws = ["wer", "wo", "was", "wen", "wem", "welche", "welcher", "wehlches", "wohin", "woher", "womit", "wie", "wann", "woran", "warum", "weshalb", "weswegen", "wozu"]
+frws = ["wer", "wo", "was", "wen", "wem", "welche", "welcher", "welches", "welchem", "wohin", "woher", "womit", "wie", "wann", "woran", "warum", "weshalb", "weswegen", "wozu"]
 
 def pronomenTausch(pronom):
     """Tausche ein Pronomen der 1. Person Singular zur 2. Person Singular oder anders herum"""
     pronom = pronom.lower()
-    if(pronom == "ich"):
+    if(pronom == "ich"): #ich du
         return "du"
     elif(pronom == "du"):
         return "ich"
-    elif(pronom == "mich"):
+    elif(pronom == "mich"): # mich dich
         return "dich"
     elif(pronom == "dich"):
         return "mich"
-    elif(pronom == "dir"):
+    elif(pronom == "dir"): # dir mir
         return "mir"
     elif(pronom == "mir"):
         return "dir"
-    elif(pronom == "meine"):
+    elif(pronom == "meine"): # meine deine
         return "deine"
     elif(pronom == "deine"):
         return "meine"
-    elif(pronom == "dein"):
+    elif(pronom == "dein"): # dein mein
         return "mein"
     elif(pronom == "mein"):
         return "dein"
+    elif(pronom == "meiner"): # meiner deiner
+        return "deiner"
+    elif(pronom == "meiner"):
+        return "deiner"
+    elif(pronom == "meinem"): # meinem deinem
+        return "deinem"
+    elif(pronom == "meinem"):
+        return "deinem"
+    elif(pronom == "deinen"): # meinen deinen
+        return "meinen"
+    elif(pronom == "meinen"):
+        return "deinen"
+    elif(pronom == "deines"): # meines deines
+        return "meines"
+    elif(pronom == "meines"):
+        return "deines"
     else:
         return pronom
 
@@ -41,6 +57,11 @@ def personFiltern(eigenschaften):
         persp = "PLU"
     return persp + ":" +  perz
 
+def zeitFilten(eigenschaften):
+    zeit = "PRÄ"
+    if("PRT" in eigenschaften):
+        zeit = "PRT"
+    return zeit
 
 def frageZuAntwort(woerterbuch, frage, case=True):
     """Erstelle eine Antwort aus einer Frage. Beispiel: wer bist du -> ich weiß nicht, wer ich bin"""
@@ -56,10 +77,8 @@ def frageZuAntwort(woerterbuch, frage, case=True):
     while("  " in frage):
         frage = frage.replace("  ", " ")
 
-    fragen = frage.replace("!", ".").replace("?", ".").replace("und", ".").replace("oder", ".").split(".")
-    for i in range(0, len(fragen)):
-        if(fragen[i] == ""):
-            fragen.pop(i)
+    fragen = frage.replace("!", ".").replace("?", ".").replace(" und ", ".").replace(" oder ", ".").split(".")
+    fragen = list(filter(None, fragen))
 
     arten = []
     antworten = []
@@ -69,6 +88,7 @@ def frageZuAntwort(woerterbuch, frage, case=True):
         zeit = "PRÄ"
         frw = "ob"
         px = True
+        vx = True
 
         if(fragen[i][0] == " "):
             fragen[i] = fragen[i][1:]
@@ -82,26 +102,49 @@ def frageZuAntwort(woerterbuch, frage, case=True):
                 frw = wort.lower()
                 arten[-1].append(["PRO"])
             else:
-                ergebnis = woerterbuch.suche(wort, case=False)
+                ergebnis = woerterbuch.suche(wort, case=True)
+                if not(ergebnis):
+                    ergebnis = woerterbuch.suche(wort, case=False)
                 if(ergebnis):
                     ergebnis = ergebnis[0]
                     arten[-1].append(ergebnis[2].split(":"))
                     if("PRO" in arten[-1][-1]):
                         neuPronom = pronomenTausch(wort)
                         antworten[-1] += neuPronom + " "
-                        if(px):
+                        if(px and not("ART" in arten[-1][-1])):
                             nergebnis = woerterbuch.suche(neuPronom, case=False)
                             if(nergebnis):
                                 person = personFiltern(nergebnis[0][2].split(":"))
                                 px = False
-                    elif not("VER" in arten[-1][-1]):
+                    
+                    elif("VER" in arten[-1][-1]):
+                        if(vx):
+                            vx = False
+                            zeit = zeitFilten(arten[-1][-1])
+                            if(px):
+                                person = personFiltern(arten[-1][-1])
+                                if(person == "SIN:2"):
+                                    person = "SIN:1"
+                                elif(person == "SIN:1"):
+                                    person = "SIN:2"
+                                px = False
+                        else:
+                            antworten[-1] += wort + " "
+                    else:
                         antworten[-1] += wort + " "
                     if("VOR" in arten[-1][-1] or "NAC" in arten[-1][-1]):
                         if(px):
                             person = "SIN:3"
                             px = False
                 else:
-                    arten[-1].append(ergebnis)
+                    if(wort[0].upper() == wort[0] and case):
+                        arten[-1].append(["SUB"])
+                        antworten[-1] += wort + " "
+                    elif not(case):
+                        antworten[-1] += wort + " "
+                        arten[-1].append(ergebnis)
+                    else:
+                        arten[-1].append(ergebnis)
         
         for j in range(0, len(arten[-1])):
             if(arten[-1][j]):
@@ -109,6 +152,7 @@ def frageZuAntwort(woerterbuch, frage, case=True):
                     konj = woerterbuch.konjugiere(fragen[i][j], person, zeit)
                     if(konj):
                         antworten[-1] += konj + " "
+                        break
         
         antworten[-1] = "Ich weiß nicht, " + frw + " " + antworten[-1].strip()
     
