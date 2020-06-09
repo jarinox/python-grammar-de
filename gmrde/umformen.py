@@ -97,8 +97,10 @@ def frageZuAntwort(woerterbuch, frage, case=True):
 
         arten.append([])
         antworten.append("")
+        iz = 0
         for wort in fragen[i]:
-            if(wort.lower() in frws):
+            iz += 1
+            if(wort.lower() in frws and iz < 4):
                 frw = wort.lower()
                 arten[-1].append(["PRO"])
             else:
