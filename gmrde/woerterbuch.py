@@ -1,5 +1,5 @@
 # woerterbuch.py - Importiere und nutze Wörterbücher
-# Copyright 2020 Jakob Stolze <https://github.com/jaybeejs>
+# Copyright 2020 Jakob Stolze <https://github.com/jarinox>
 
 import csv
 

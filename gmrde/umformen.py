@@ -1,5 +1,5 @@
 # umformen.py - Wörter und Sätze umformen
-# Copyright 2020 Jakob Stolze <https://github.com/jaybeejs>
+# Copyright 2020 Jakob Stolze <https://github.com/jarinox>
 
 
 frws = ["wer", "wo", "was", "wen", "wem", "welche", "welcher", "welches", "welchem", "wohin", "woher", "womit", "wie", "wann", "woran", "warum", "weshalb", "weswegen", "wozu"]

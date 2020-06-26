@@ -1,5 +1,5 @@
 # python-grammar-de - Analysieren und Umformen deutscher Wörter und Sätze
-# Copyright 2020 Jakob Stolze <https://github.com/jaybeejs>
+# Copyright 2020 Jakob Stolze <https://github.com/jarinox>
 #
 #
 # This library is free software; you can redistribute it and/or
