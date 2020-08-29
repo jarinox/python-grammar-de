@@ -46,6 +46,33 @@ def pronomenTausch(pronom):
     else:
         return pronom
 
+def pronomenTauschW(woerterbuch, pronom):
+    """Benutzt ein Wörterbuch um ein Pronomen der 1. Person Singular zur 2. Person Singular oder anders herum zu konvertieren."""
+    pronom = pronom.lower()
+    ergebnisse = woerterbuch.suche(pronom, case=False)
+
+    if(pronom == "ich"):
+        return "du"
+    elif(pronom == "du"):
+        return "ich"
+    else:
+        weiter = False
+        for ergebnis in ergebnisse:
+            if("PRO" in ergebnis[2].split(":")):
+                weiter = ergebnis
+
+        if(weiter):
+            if(weiter[1] in ["der", "die", "das"]):
+                return pronom
+            elif(pronom[0] == "m"):
+                return "d"+pronom[1:]
+            elif(pronom[0] == "d"):
+                return "m"+pronom[1:]
+            else:
+                return pronom
+        else:
+            return pronom
+
 def personFiltern(eigenschaften):
     perz = "1"
     persp = "SIN"
@@ -111,7 +138,7 @@ def frageZuAntwort(woerterbuch, frage, case=True):
                     ergebnis = ergebnis[0]
                     arten[-1].append(ergebnis[2].split(":"))
                     if("PRO" in arten[-1][-1]):
-                        neuPronom = pronomenTausch(wort)
+                        neuPronom = pronomenTauschW(woerterbuch, wort)
                         antworten[-1] += neuPronom + " "
                         if(px and not("ART" in arten[-1][-1])):
                             nergebnis = woerterbuch.suche(neuPronom, case=False)
